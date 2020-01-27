@@ -27,11 +27,36 @@ docker-compose up -d --force-recreate
 
 ### Endpoints:
 
-* http://localhost:9080/swagger-ui.html - service swagger
+* http://localhost:9080/ - service welcome page
 * http://keycloak:8080/ - keycloak
 
 
 ### What under the hood?
 
-TODO...
+3 services:
+* nocraft server resides [here](https://github.com/Dmitry-itechart/nocraft-server).
+* keycloack taken from [here](https://hub.docker.com/r/jboss/keycloak/)
+* we use keycloack with postgres db together, so postgres taken from [here](https://hub.docker.com/_/postgres)
 
+First we need to start keycloak. To make keycloak persisted, we use postgres db as data store. Postges data itself is
+ stored in mounted volume.
+ 
+ During initial start we import pre-created 'Demo' realm to keycloack. Pay attention that we assume that `nocraft
+ ` server is configured to use this default 'Demo' realm.
+ 
+ This can be configured with nocraft server's environment properties. Pay attention to this configuration part:
+ ```json
+nocraft:
+    environment:
+      - keycloak.auth-server-url=http://keycloak:8080/auth
+```
+
+Also pay attention that we use internal 'docker-compose' network called 
+```json
+networks:
+  keycloak-network:
+```
+This way inside this network keycloak will be resolved by it's server name automatically.
+
+When operating from browser - which is on the host system, we will get redirect to `keycloak:8080`. This should be
+ resolved to localhost since keycloak exposes `8080` port here and all services by default accessible from `127.0.0.1`
