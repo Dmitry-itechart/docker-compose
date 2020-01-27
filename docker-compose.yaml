@@ -8,13 +8,13 @@ services:
       - keycloak-network
     ports:
       - 127.0.0.1:9080:9080
-      - 127.0.0.1:19080:19080
+#      - 127.0.0.1:19080:19080
     environment:
       - image.path=https://picsum.photos/300
       - keycloak.auth-server-url=http://keycloak:8080/auth
       - server.port=9080
       - logging.level.root=INFO
-      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=19080"
+#      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=19080"
 
   keycloak:
     image: jboss/keycloak:8.0.1
