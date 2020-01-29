@@ -13,6 +13,12 @@ Please update dns (`/etc/hosts`) resolution to point to:
 
 ### How to run?
 
+**Note:** Please first start postgres (`docker-compose up postgres-keycloak`). Postgres requires to create db volume 
+files, so this process may take time.
+When started first time together with keycloak, database can be not ready to accept connections. And during first
+starts **keycloak may fail to start together** at one time with **postgres**.
+
+Assume we want to start all services all together.
 - just run all services
 ```bash
 docker-compose up -d
