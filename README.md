@@ -2,6 +2,7 @@
 
 Once simple service that runs in docker container and uses keycloak to auth requests.
 
+
 ### Prerequisites
 
 Install `docker` and `docker-compose`
@@ -30,6 +31,9 @@ or want to use locally-assembled images.
 ```bash
 docker-compose up -d --force-recreate
 ```
+
+To run UI project, build and run from [here](https://bitbucket.org/aliaksandr_filipau/keycloak-angular-auth)
+
 
 ### Endpoints:
 
