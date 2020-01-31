@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   nocraft:
-    image: dzmitryitechart/nocraft-server:0.5
+    image: dzmitryitechart/nocraft-server:0.66
     container_name: nocraft
     networks:
       - keycloak-network
@@ -14,6 +14,9 @@ services:
       - keycloak.auth-server-url=http://keycloak:8080/auth
       - server.port=9080
       - logging.level.root=INFO
+      - froala.git.username=
+      - froala.git.token=
+      - froala.git.repository=
 #      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=19080"
 
   keycloak:
