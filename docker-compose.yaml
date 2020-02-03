@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   nocraft:
-    image: dzmitryitechart/nocraft-server:0.66
+    image: dzmitryitechart/nocraft-server:0.9-nosec
     container_name: nocraft
     networks:
       - keycloak-network
@@ -17,7 +17,19 @@ services:
       - froala.git.username=${GIT_USER}
       - froala.git.token=${GIT_TOKEN}
       - froala.git.repository=${GIT_REPO}
+      - froala.ui.url=http://dev:4201
 #      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=19080"
+
+  dev:
+    image: keycloak-angular-auth_dev:latest
+    container_name: dev
+    networks:
+      - keycloak-network
+    ports:
+      - '127.0.0.1:4200:4200'
+      - '127.0.0.1:4201:4201'
+    environment:
+      - GIT_REPO_HTTPS=https://github.com/${GIT_USERNAME}/${GIT_REPOSITORY}.git
 
   keycloak:
     image: jboss/keycloak:8.0.1
