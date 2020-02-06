@@ -6,7 +6,7 @@ Here we have next services:
 * keycloak - jboss keycloak server (may be used to auth users in some nocraft versions)
 * posgres-keycloak - keycloak database
 
-### nocraft
+## nocraft-server
 
 #### Build
 
@@ -46,7 +46,7 @@ here `test` is repository located at `https://github.com/user_name/test`
 If you don't want to use `.env` file please edit variables in `docker-compose.yaml` file accordingly.
 
 
-### dev
+## dev-server
 
 #### Build
 
