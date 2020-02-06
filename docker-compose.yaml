@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   nocraft:
-    image: dzmitryitechart/nocraft-server:0.9-nosec
+    image: dzmitryitechart/nocraft-server:0.10-nosec
     container_name: nocraft
     networks:
       - keycloak-network
