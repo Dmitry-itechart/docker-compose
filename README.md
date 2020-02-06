@@ -11,7 +11,7 @@ Here we have next services:
 #### Build
 
 Is assembled from [here](https://bitbucket.org/openchannel/site-backend/src/master/)
-Or can be pulled from [here](https://github.com/Dmitry-itechart/nocraft-server)
+Or can be pulled from [here](https://hub.docker.com/repository/docker/dzmitryitechart/nocraft-server)
 
 #### Description
 
@@ -52,7 +52,7 @@ If you don't want to use `.env` file please edit variables in `docker-compose.ya
 
 We must to build dev server image locally.
 
-1) Check out locally project: [https://bitbucket.org/openchannel/site-frontend/src]
+1) Check out locally project: [here](https://bitbucket.org/openchannel/site-frontend/src)
 2) run from project root `docker-compose build`. Pay attenton to build container output. Should contain string like: 
 ```text
 Successfully built 57d6ebfd75a0
@@ -140,7 +140,7 @@ docker-compose up -d --force-recreate
 
 For keycloask auth we have to use 3 services:
 
-* nocraft server resides [here](https://github.com/Dmitry-itechart/nocraft-server).
+* nocraft server resides [here](https://bitbucket.org/openchannel/site-backend/src/master/).
 * keycloack taken from [here](https://hub.docker.com/r/jboss/keycloak/)
 * we use keycloack with postgres db together, so postgres taken from [here](https://hub.docker.com/_/postgres)
 
