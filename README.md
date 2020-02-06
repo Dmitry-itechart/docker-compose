@@ -1,6 +1,100 @@
 # PoC
 
-Once simple service that runs in docker container and uses keycloak to auth requests.
+Here we have next services:
+* nocraft - spring boot base java server capable to commit changes to github
+* dev - angular frontend server with WYSIWYG editor
+* keycloak - jboss keycloak server (may be used to auth users in some nocraft versions)
+* posgres-keycloak - keycloak database
+
+### nocraft
+
+#### Build
+
+Is assembled from [here](https://bitbucket.org/openchannel/site-backend/src/master/)
+Or can be pulled from [here](https://github.com/Dmitry-itechart/nocraft-server)
+
+#### Description
+
+As mentions above - this is simple spring boot server to commit some data to github repository. For simplicity we assume
+that we have only one github repository.
+
+We have to configure nocraft server to use this repository.
+
+Please use [github.com](https://github.com). Create developer token for your github: [create token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
+
+Current version of nocraft server uses [github rest api](https://github.com/github-api/github-api)
+
+Let assume repository we are going to work with contains correct template. 
+Template code can be found [here](https://bitbucket.org/openchannel/site-frontend/src)
+
+Please publish this template on publicly accessible git repository on github.
+
+Configure nocraft server to commit to this repository. To do that, create file called `.env` with values: 
+```test
+GIT_USER=<username>
+GIT_TOKEN=<token>
+GIT_REPO=<repository_short_name>
+```
+for example:
+```.env
+GIT_USER=user_name
+GIT_TOKEN=123456789abcdefgh
+GIT_REPO=test
+```
+here `test` is repository located at `https://github.com/user_name/test`
+
+If you don't want to use `.env` file please edit variables in `docker-compose.yaml` file accordingly.
+
+
+### dev
+
+#### Build
+
+We must to build dev server image locally.
+
+1) Check out locally project: [https://bitbucket.org/openchannel/site-frontend/src]
+2) run from project root `docker-compose build`. Pay attenton to build container output. Should contain string like: 
+```text
+Successfully built 57d6ebfd75a0
+Successfully tagged keycloak-angular-auth_dev:latest
+```
+Here we should reference in `docker-compose.yaml` file `dev` server as `keycloak-angular-auth_dev:latest` because we
+ have built this container locally.
+
+
+#### Description
+
+dev is node/angular server wich is running in debug mode from sources located inside running container.
+
+dev server must be configured to use repository with correct template from where code will be used.
+
+Please configure in `.env` file next variables: 
+```text
+GIT_USERNAME=<git_username>
+GIT_REPOSITORY=<repository_short_name>
+```
+Or if you don't want to use .env file please edit variables inside `docker-compose.yaml` file.
+
+When dev server is stated it has no template source code. It is look into configured `GIT_USERNAME` and `GIT_REPOSITORY`. 
+Since we assume that we are working with github only, we construct repository url from this parameters and pull front
+ template code from remote repository. Then dev server run regular `npm build` and other tasks to resolve template
+ build and runs dev server on 4200 port.
+ 
+ We assume user has access to `localhost:4200`. When user make some changes on site UI, `dev` server doing rest call
+  to `nocraft` server sending changed elements and files data. Pay attention - dev server only serving site template
+   from inside container source code and does not have write access to remote repository.
+   
+ From the other hand `nocraft` server has write access. And when we send from UI request to update template `nocraft
+ ` server able to create commit and update remote template repository. After commit to remote repository is done
+ , `nocraft` server sends notification to `dev` server running angular UI.
+ 
+ When `dev` server receives notification from `nocraft` server it is does `git pull` to update sources from remote
+  repository. Since we run angular server in dev mode - changes becomes accessible on UI like it was checked out
+   initially. So next time when starting `dev` server container changes will be pulled in remote github.
+
+### Interaction schema
+
+![Schema](img/schema.png)
 
 
 ### Prerequisites
@@ -11,6 +105,7 @@ Please update dns (`/etc/hosts`) resolution to point to:
 ```text
 127.0.0.1	keycloak
 ```
+
 
 ### How to run?
 
@@ -32,18 +127,19 @@ or want to use locally-assembled images.
 docker-compose up -d --force-recreate
 ```
 
-To run UI project, build and run from [here](https://bitbucket.org/aliaksandr_filipau/keycloak-angular-auth)
-
-
 ### Endpoints:
 
-* http://localhost:9080/ - service welcome page
-* http://keycloak:8080/ - keycloak
+* http://localhost:4200/ - site frontend
+* http://localhost:4201/ - site frontend listener port to react on source code updates
+* http://localhost:9080/ - service welcome page (redirects to swagger-ui.html)
+
+* http://keycloak:8080/ - keycloak (not used)
 
 
-### What under the hood?
+### About the Keycloak (no used currently)
 
-3 services:
+For keycloask auth we have to use 3 services:
+
 * nocraft server resides [here](https://github.com/Dmitry-itechart/nocraft-server).
 * keycloack taken from [here](https://hub.docker.com/r/jboss/keycloak/)
 * we use keycloack with postgres db together, so postgres taken from [here](https://hub.docker.com/_/postgres)
