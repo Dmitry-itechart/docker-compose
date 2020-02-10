@@ -2,23 +2,22 @@ version: "3.7"
 services:
 
   nocraft:
-    image: dzmitryitechart/nocraft-server:0.10-nosec
+    image: dzmitryitechart/nocraft-server:0.12-nosec
     container_name: nocraft
     networks:
       - keycloak-network
     ports:
       - 127.0.0.1:9080:9080
-#      - 127.0.0.1:19080:19080
+      - 127.0.0.1:19080:19080
     environment:
-      - image.path=https://picsum.photos/300
       - keycloak.auth-server-url=http://keycloak:8080/auth
       - server.port=9080
       - logging.level.root=INFO
       - froala.git.username=${GIT_USER}
-      - froala.git.token=${GIT_TOKEN}
-      - froala.git.repository=${GIT_REPO}
-      - froala.ui.url=http://dev:4201
-#      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=19080"
+      - froala.git.token=${GIT_PASS}
+      - froala.git.repository=${GIT_REPO_HTTPS}
+      - froala.ui.url=http://localhost:4201
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:19080"
 
   dev:
     image: keycloak-angular-auth_dev:latest
@@ -29,46 +28,48 @@ services:
       - '127.0.0.1:4200:4200'
       - '127.0.0.1:4201:4201'
     environment:
-      - GIT_REPO_HTTPS=https://github.com/${GIT_USERNAME}/${GIT_REPOSITORY}.git
+      - GIT_REPO_HTTPS=${GIT_REPO_HTTPS}
 
-  keycloak:
-    image: jboss/keycloak:8.0.1
-    container_name: keycloak
-    depends_on:
-      - postgres-keycloak
-    networks:
-      - keycloak-network
-    volumes:
-      - ./keycloak/realm-export.json:/tmp/example-realm.json
-    ports:
-      - 127.0.0.1:8080:8080 # admin/web app
-#      - 7990:9990 # default jboss management port
-#      - 7170:8180 # auth endpoint
-    environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-      - DB_USER=keycloak
-      - DB_PASSWORD=keycloak
-      - DB_VENDOR=postgres
-      - DB_ADDR=postgres-keycloak
-      - KEYCLOAK_IMPORT=/tmp/example-realm.json
-      - KEYCLOAK_HOSTNAME=keycloak
-  postgres-keycloak:
-    image: postgres:9.6.16
-    container_name: postgres-keycloak
-    networks:
-      - keycloak-network
-    volumes:
-      - postgres_keycloak:/var/lib/postgresql/data
-      - ./postgres-keycloak/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh
-    environment:
-      - POSTGRES_DB=keycloak
-      - POSTGRES_USER=keycloak
-      - POSTGRES_PASSWORD=keycloak
+# disable keycloak temporary
 
-volumes:
-  postgres_keycloak:
-    name: postgres_keycloak
+#  keycloak:
+#    image: jboss/keycloak:8.0.1
+#    container_name: keycloak
+#    depends_on:
+#      - postgres-keycloak
+#    networks:
+#      - keycloak-network
+#    volumes:
+#      - ./keycloak/realm-export.json:/tmp/example-realm.json
+#    ports:
+#      - 127.0.0.1:8080:8080 # admin/web app
+##      - 7990:9990 # default jboss management port
+##      - 7170:8180 # auth endpoint
+#    environment:
+#      - KEYCLOAK_USER=admin
+#      - KEYCLOAK_PASSWORD=admin
+#      - DB_USER=keycloak
+#      - DB_PASSWORD=keycloak
+#      - DB_VENDOR=postgres
+#      - DB_ADDR=postgres-keycloak
+#      - KEYCLOAK_IMPORT=/tmp/example-realm.json
+#      - KEYCLOAK_HOSTNAME=keycloak
+#  postgres-keycloak:
+#    image: postgres:9.6.16
+#    container_name: postgres-keycloak
+#    networks:
+#      - keycloak-network
+#    volumes:
+#      - postgres_keycloak:/var/lib/postgresql/data
+#      - ./postgres-keycloak/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh
+#    environment:
+#      - POSTGRES_DB=keycloak
+#      - POSTGRES_USER=keycloak
+#      - POSTGRES_PASSWORD=keycloak
+
+#volumes:
+#  postgres_keycloak:
+#    name: postgres_keycloak
 
 networks:
   keycloak-network:
