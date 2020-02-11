@@ -2,25 +2,28 @@ version: "3.7"
 services:
 
   nocraft:
-    image: dzmitryitechart/nocraft-server:0.12-nosec
+    image: dzmitryitechart/nocraft-server:0.17-nosec
     container_name: nocraft
     networks:
       - keycloak-network
     ports:
       - 127.0.0.1:9080:9080
       - 127.0.0.1:19080:19080
+    volumes:
+      - ${GIT_KEYPATH}:/root/.ssh/github
     environment:
       - keycloak.auth-server-url=http://keycloak:8080/auth
       - server.port=9080
       - logging.level.root=INFO
       - froala.git.username=${GIT_USER}
-      - froala.git.token=${GIT_PASS}
-      - froala.git.repository=${GIT_REPO_HTTPS}
-      - froala.ui.url=http://localhost:4201
+      - froala.git.key-path=/root/.ssh/github
+      - froala.git.key-password=${GIT_KEYPASSWORD}
+      - froala.git.repository=${GIT_SSH_REPO}
+      - froala.ui.url=http://dev:4201
       - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:19080"
 
   dev:
-    image: keycloak-angular-auth_dev:latest
+    image: dzmitryitechart/octofroala-ui:0.1
     container_name: dev
     networks:
       - keycloak-network
