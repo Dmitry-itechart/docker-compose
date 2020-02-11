@@ -6,6 +6,27 @@ Here we have next services:
 * keycloak - jboss keycloak server (may be used to auth users in some nocraft versions)
 * posgres-keycloak - keycloak database
 
+### How to RUN very simply
+
+0) Some assumptions:
+    * <user> is bitbuckte username
+    * user has imported ssh key, and secret key part resides in `~/.ssh/id_rsa`
+    * password is secret ssh key password
+    * user has forked repository with correct froala template and has write access to that repository.
+1) create `.env` file in same folder where `docker-compose.yaml` is located (in project root)
+2) update .env file with next parameters:
+
+```text
+GIT_USER=user
+GIT_KEYPATH=/home/dmitry/.ssh/id_rsa
+GIT_KEYPASSWORD=password
+GIT_SSH_REPO=<user>@bitbucket.org:<group>/<repo>.git
+GIT_REPO_HTTPS=https://<user>@bitbucket.org/<group>/<repo>.git
+
+```
+ 3) make sure dev is started
+ 4) open browser localhost:4200 and make some changes...
+
 ## nocraft-server
 
 #### Build
